@@ -1,20 +1,17 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export default class ImageGalleryItem extends Component {
-  render() {
-    return (
-      <li className="ImageGalleryItem" onClick={this.props.openModal}>
-        <img
-          className="ImageGalleryItem-image"
-          src={this.props.webformatURL}
-          alt={this.props.id}
-          data-large={this.props.largeImage}
-        />
-      </li>
-    );
-  }
-}
+const ImageGalleryItem = (props) => {
+  return (
+    <li className="ImageGalleryItem" onClick={props.openModal}>
+      <img
+        className="ImageGalleryItem-image"
+        src={props.webformatURL}
+        alt={props.id}
+        data-large={props.largeImage}
+      />
+    </li>
+  );
+};
 
 ImageGalleryItem.protoType = {
   webformatURL: PropTypes.string,
@@ -22,3 +19,5 @@ ImageGalleryItem.protoType = {
   largeImage: PropTypes.string,
   openModal: PropTypes.func,
 };
+
+export default ImageGalleryItem;
