@@ -18,10 +18,9 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [totalHits, setTotalHits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
-  const [largeImageURL, setLargeImageURL] = useState(null);
+  const [bigImageURL, setBigImageURL] = useState(null);
 
   useEffect(() => {
     if (query === '') {
@@ -51,6 +50,12 @@ const App = () => {
 
     serachPictures();
 
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        setShowModal(false);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
 
     window.removeEventListener('keydown', handleKeyDown);
@@ -68,56 +73,49 @@ const App = () => {
     setIsLoading(true);
   };
 
-  const toggleModal = () => {
-    setShowModal(prevShowModal => !prevShowModal);
-  };
-
   const handleModal = e => {
     let currentImageUrl = e.target.dataset.large;
     console.log(currentImageUrl);
     console.log(e.target.nodeName);
 
     if (e.target.nodeName === 'IMG') {
-      setLargeImageURL(currentImageUrl);
+      setBigImageURL(currentImageUrl);
       toggleModal();
     }
   };
 
-  const handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      setShowModal(false);
-    }
+  const toggleModal = () => {
+    setShowModal(prevShowModal => !prevShowModal);
   };
 
-  /*const { pictures, isLoading, totalHits, showModal, largeImageURL } =
-      this.state;
-    const openModal = this.handleModal;*/
   return (
-    <div className="App">
-      <Searchbar onSubmit={handleFormSubmit} />
-      <ImageGallery>
-        {pictures.map(({ webformatURL, id, largeImageURL }) => (
-          <ImageGalleryItem
-            key={id}
-            id={id}
-            webformatURL={webformatURL}
-            largeImage={largeImageURL}
-            openModal={handleModal}
-          />
-        ))}
-      </ImageGallery>
-      {showModal && (
-        <Modal largeImageURL={largeImageURL} onClose={toggleModal()} />
-      )}
+    <>
+      <div className="App">
+        <Searchbar onSubmit={handleFormSubmit} />
+        <ImageGallery>
+          {pictures.map(({ webformatURL, id, largeImageURL }) => (
+            <ImageGalleryItem
+              key={id}
+              id={id}
+              webformatURL={webformatURL}
+              largeImage={largeImageURL}
+              openModal={handleModal}
+            />
+          ))}
+        </ImageGallery>
+        {showModal && (
+          <Modal fullImageURL={bigImageURL} onClose={toggleModal()} />
+        )}
 
-      {pictures.length >= 12 && pictures.length < totalHits && (
-        <Button onClick={handleOnLoadMore} />
-      )}
+        {pictures.length >= 12 && pictures.length < totalHits && (
+          <Button onClick={handleOnLoadMore} />
+        )}
 
-      {isLoading && <Loader />}
+        {isLoading && <Loader />}
 
-      <ToastContainer autoClose={3000} />
-    </div>
+        <ToastContainer autoClose={3000} />
+      </div>
+    </>
   );
 };
 
