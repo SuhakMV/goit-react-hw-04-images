@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const ImageGalleryItem = (props) => {
+const ImageGalleryItem = props => {
   return (
     <li className="ImageGalleryItem" onClick={props.openModal}>
       <img

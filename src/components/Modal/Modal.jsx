@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-export const Modal = ({ onClose, fullImageURL }) => {
+const Modal = props => {
   return (
-    <div className="Overlay" onClick={onClose}>
+    <div className="Overlay" onClick={props.onClose}>
       <div className="Modal">
-        <img src={fullImageURL} alt="" />
+        <img src={props.largeImageURL} alt="" />
       </div>
     </div>
   );
@@ -12,7 +12,7 @@ export const Modal = ({ onClose, fullImageURL }) => {
 
 Modal.protoType = {
   onClose: PropTypes.func,
-  largeImageURL: PropTypes.string,
+  fullImageURL: PropTypes.string,
 };
 
 export default Modal;

@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import PropTypes from 'prop-types';
 
-const Searchbar = (props) => {
+const Searchbar = props => {
   const [query, setQuery] = useState('');
 
   const handleInputChange = event => {

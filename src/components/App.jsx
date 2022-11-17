@@ -17,10 +17,9 @@ const App = () => {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalHits, setTotalHits] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState('idle');
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState(null);
-  const [bigImageURL, setBigImageURL] = useState(null);
+  const [largeImageURL, setLargeImageURL] = useState(null);
 
   useEffect(() => {
     if (query === '') {
@@ -35,21 +34,23 @@ const App = () => {
             'Sorry, there are no images matching your search query. Please try again.'
           );
         }
+
         setPictures(prevPictures => [...prevPictures, ...data.hits]);
         setTotalHits(data.totalHits);
-        setIsLoading(false);
-        setError(null);
+        setStatus('success');
 
-        console.log(data, '---res');
+        //console.log(data, '---res');
       } catch (error) {
-        setError(error);
+        setStatus('error');
       } finally {
-        setIsLoading(false);
+        setStatus('success');
       }
     }
 
     serachPictures();
+  }, [query, page]);
 
+  useEffect(() => {
     const handleKeyDown = e => {
       if (e.code === 'Escape') {
         setShowModal(false);
@@ -58,28 +59,28 @@ const App = () => {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    window.removeEventListener('keydown', handleKeyDown);
-  }, [query, page]);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 
   const handleFormSubmit = query => {
     setQuery(query);
     setPictures([]);
     setPage(1);
-    setIsLoading(true);
+    setStatus('loading');
   };
 
   const handleOnLoadMore = () => {
     setPage(prevPage => prevPage + 1);
-    setIsLoading(true);
+    setStatus('loading');
   };
 
   const handleModal = e => {
     let currentImageUrl = e.target.dataset.large;
-    console.log(currentImageUrl);
-    console.log(e.target.nodeName);
 
     if (e.target.nodeName === 'IMG') {
-      setBigImageURL(currentImageUrl);
+      setLargeImageURL(currentImageUrl);
       toggleModal();
     }
   };
@@ -103,15 +104,17 @@ const App = () => {
             />
           ))}
         </ImageGallery>
-        {showModal && (
-          <Modal fullImageURL={bigImageURL} onClose={toggleModal()} />
-        )}
 
         {pictures.length >= 12 && pictures.length < totalHits && (
           <Button onClick={handleOnLoadMore} />
         )}
 
-        {isLoading && <Loader />}
+        {showModal && (
+          <Modal largeImageURL={largeImageURL} onClose={toggleModal} />
+        )}
+
+        {status === 'loading' && <Loader />}
+        {status === 'error' && toast.error({ status })}
 
         <ToastContainer autoClose={3000} />
       </div>
